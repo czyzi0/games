@@ -1,2 +1,5 @@
 # js-games
-simple online games
+Set of simple online games.
+
+---
+###### by czyzi0
