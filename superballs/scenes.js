@@ -29,6 +29,8 @@ class GameScene {
     }
 
     draw() {
+        background(230);
+
         for(let tile of this.tiles) {
             tile.draw();
         }
@@ -37,7 +39,7 @@ class GameScene {
     handleClick(clickX, clickY) {
         let indexX = floor(clickX / 100);
         let indexY = floor(clickY / 100);
-        
+
         console.log(indexX + ' ' + indexY)
     }
 }

@@ -34,7 +34,6 @@ function draw() {
     scale(scale_);
 
     if(scene.update()) {
-        background(230);
         scene.draw();
     }
 
@@ -44,5 +43,5 @@ function draw() {
 
 function mouseClicked() {
     scene.handleClick((mouseX-translationX) / scale_, (mouseY-translationY) / scale_);
-    redraw();
+    scene.draw();
 }
