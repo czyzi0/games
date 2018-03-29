@@ -14,7 +14,7 @@ class Tile {
 
     update() {
         if(this.ballSize < 0.7*this.size) {
-            this.ballSize = min(0.7*this.size, this.ballSize+3);
+            this.ballSize = min(0.7*this.size, this.ballSize+0.04*this.size);
             return true;
         } else {
             return false;
