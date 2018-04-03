@@ -9,10 +9,12 @@ let translationY;
 
 function setup() {
     frameRate(30);
-    createCanvas(800, 600);
+    createCanvas(540, 600);
 
     Color = {
-        NONE: color(0, 0, 0),
+        BACKGROUND: color(250),
+        UI: color(200),
+        NONE: color(0, 0),
         RED: color(255, 0, 0),
         YELLOW: color(255, 255, 0),
         BLUE: color(0, 128, 255),

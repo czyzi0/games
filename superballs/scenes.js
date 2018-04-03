@@ -10,8 +10,8 @@ class GameScene {
                 this.tiles.push(new Tile(indexX*100, indexY*100, 100, Color.ORANGE));
             }
         }
-        this.chosenX = -1;
-        this.chosenY = -1;
+        this.activeX = -1;
+        this.activeY = -1;
 
         this.nextScene = this
 
@@ -29,7 +29,7 @@ class GameScene {
     }
 
     draw() {
-        background(230);
+        background(Color.BACKGROUND);
 
         for(let tile of this.tiles) {
             tile.draw();
@@ -40,6 +40,39 @@ class GameScene {
         let indexX = floor(clickX / 100);
         let indexY = floor(clickY / 100);
 
-        console.log(indexX + ' ' + indexY)
+        // Click out of board
+        if(indexX < 0 || indexY < 0 || indexX >= 9 || indexY >= 9) {
+            return
+        }
+        // Click on tile with ball
+        if(this.tiles[indexY*9 + indexX].ballColor !== Color.NONE) {
+            // Click on activated tile
+            if(this.activeX === indexX && this.activeY === indexY) {
+                this.deactivateTile();
+            }
+            // Click on deactivated tile
+            else {
+                this.deactivateTile();
+                this.activateTile(indexX, indexY);
+            }
+        }
+        // Click on empty tile
+        else if(this.activeX !== -1 && this.activeY !== -1) {
+            
+        }
+    }
+
+    activateTile(indexX, indexY) {
+        this.tiles[indexY*9 + indexX].active = true;
+        this.activeX = indexX;
+        this.activeY = indexY;
+    }
+
+    deactivateTile() {
+        if(this.activeX !== -1 && this.activeY !== -1) {
+            this.tiles[this.activeY*9 + this.activeX].active = false;
+            this.activeX = -1;
+            this.activeY = -1;
+        }
     }
 }

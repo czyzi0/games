@@ -7,7 +7,7 @@ class Tile {
 
         this.ballColor = ballColor;
         this.ballSize = 0;
-        this.chosen = false;
+        this.active = false;
 
         this.framed = framed;
     }
@@ -23,16 +23,18 @@ class Tile {
 
     draw() {
         // Draw tile
-        stroke(180);
-        strokeWeight(4);
-        if(this.chosen) {
-            fill(180);
-        } else {
-            fill(230);
+        if(this.framed) {
+            stroke(Color.UI);
+            strokeWeight(0.04*this.size);
+            if(this.active) {
+                fill(Color.UI);
+            } else {
+                fill(Color.BACKGROUND);
+            }
+            rect(this.x, this.y, this.size, this.size);
         }
-        rect(this.x, this.y, this.size, this.size);
         // Draw ball
-        if(this.ballColor != Color.NONE) {
+        if(this.ballColor !== Color.NONE) {
             noStroke();
             fill(this.ballColor);
             ellipse(this.x + this.size/2, this.y + this.size/2, this.ballSize, this.ballSize);
