@@ -1,20 +1,22 @@
 class Tile {
 
-    constructor(x, y, size, ballColor, framed=true) {
+    constructor(x, y, size, ballColor, framed=true, animationDuration=15) {
         this._size = size;
         this._x = x;
         this._y = y;
 
+        this.active = false;
         this._ballColor = ballColor;
         this._ballSize = 0;
-        this.active = false;
+        this._ballSizeStep = 0;
 
         this._framed = framed;
+        this._animationDuration = animationDuration;
     }
 
     update() {
         if(this._ballSize < 0.7*this._size) {
-            this._ballSize = min(0.7*this._size, this._ballSize+0.05*this._size);
+            this._ballSize = min(0.7*this._size, this._ballSize+this._ballSizeStep);
             return true;
         } else {
             return false;
@@ -46,15 +48,16 @@ class Tile {
     }
 
     set ballColor(newBallColor) {
-        this._ballSize = 0;
         this._ballColor = newBallColor;
+        this._ballSize = 0;
+        this._ballSizeStep = 0.7*this._size / this._animationDuration;
     }
 }
 
 
 class Counter {
 
-    constructor(x, y, w, h, size, value) {
+    constructor(x, y, w, h, size, value, animationDuration=15) {
         this._size = size;
         this._x = x;
         this._y = y;
@@ -62,14 +65,18 @@ class Counter {
         this._h = h;
 
         this._value = value;
-
         this._displayedValue = value;
         this._step = 0;
+
+        this._animationDuration = animationDuration;
     }
 
     update() {
-        if(this._displayedValue != this._value) {
+        if(this._displayedValue < this._value) {
             this._displayedValue = min(this._value, this._displayedValue + this._step);
+            return true;
+        } else if(this._displayedValue > this._value) {
+            this._displayedValue = max(this._value, this._displayedValue + this._step);
             return true;
         } else {
             this._step = 0;
@@ -78,7 +85,8 @@ class Counter {
     }
 
     draw() {
-        noStroke();
+        stroke(Color.UI_DARK);
+        strokeWeight(2);
         fill(Color.UI_DARK);
         textSize(this._size);
         textAlign(RIGHT);
@@ -91,6 +99,6 @@ class Counter {
 
     set value(newValue) {
         this._value = newValue;
-        this._step = (this._value - this._displayedValue) / 15;
+        this._step = (this._value - this._displayedValue) / this._animationDuration;
     }
 }
