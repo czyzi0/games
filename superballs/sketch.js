@@ -13,7 +13,8 @@ function setup() {
 
     Color = {
         BACKGROUND: color(250),
-        UI: color(200),
+        UI_LIGHT: color(200),
+        UI_DARK: color(121),
         NONE: color(0, 0),
         RED: color(255, 0, 0),
         YELLOW: color(255, 255, 0),

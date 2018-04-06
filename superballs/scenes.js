@@ -4,26 +4,31 @@ class GameScene {
         this.width = 900;
         this.height = 1000;
 
-        this.tiles = [];
+        this._tiles = [];
         for(let indexY=0; indexY<9; ++indexY) {
             for(let indexX=0; indexX<9; ++indexX) {
-                this.tiles.push(new Tile(indexX*100, indexY*100, 100, Color.ORANGE));
+                this._tiles.push(new Tile(indexX*100, indexY*100, 100, Color.NONE));
             }
         }
-        this.activeX = -1;
-        this.activeY = -1;
+        this._activeX = -1;
+        this._activeY = -1;
+
+        this._pointsCounter = new Counter(450, 920, 440, 60, 60, 0);
 
         this.nextScene = this
 
-        this.points = 0;
+        this._tiles[0].ballColor = Color.RED;
     }
 
     update() {
         let updated = false;
-        for(let tile of this.tiles) {
+        for(let tile of this._tiles) {
             if(tile.update()) {
                 updated = true;
             }
+        }
+        if(this._pointsCounter.update()) {
+            updated = true;
         }
         return updated;
     }
@@ -31,9 +36,11 @@ class GameScene {
     draw() {
         background(Color.BACKGROUND);
 
-        for(let tile of this.tiles) {
+        for(let tile of this._tiles) {
             tile.draw();
         }
+
+        this._pointsCounter.draw();
     }
 
     handleClick(clickX, clickY) {
@@ -45,34 +52,46 @@ class GameScene {
             return
         }
         // Click on tile with ball
-        if(this.tiles[indexY*9 + indexX].ballColor !== Color.NONE) {
+        if(this._tiles[indexY*9 + indexX].ballColor !== Color.NONE) {
             // Click on activated tile
-            if(this.activeX === indexX && this.activeY === indexY) {
-                this.deactivateTile();
+            if(this._activeX === indexX && this._activeY === indexY) {
+                this._deactivateTile();
             }
             // Click on deactivated tile
             else {
-                this.deactivateTile();
-                this.activateTile(indexX, indexY);
+                this._deactivateTile();
+                this._activateTile(indexX, indexY);
             }
         }
-        // Click on empty tile
-        else if(this.activeX !== -1 && this.activeY !== -1) {
-            
+        // Click on empty tile when some tile is active
+        else if(this._activeX !== -1 && this._activeY !== -1) {
+            if(this._existsPath(indexX, indexY)) {
+                this._tiles[indexY*9 + indexX].ballColor = this._tiles[this._activeY*9 + this._activeX].ballColor;
+                this._tiles[this._activeY*9 + this._activeX].ballColor = Color.NONE;
+                this._deactivateTile();
+            }
+            else {
+                this._deactivateTile();
+            }
         }
     }
 
-    activateTile(indexX, indexY) {
-        this.tiles[indexY*9 + indexX].active = true;
-        this.activeX = indexX;
-        this.activeY = indexY;
+    _activateTile(indexX, indexY) {
+        this._tiles[indexY*9 + indexX].active = true;
+        this._activeX = indexX;
+        this._activeY = indexY;
     }
 
-    deactivateTile() {
-        if(this.activeX !== -1 && this.activeY !== -1) {
-            this.tiles[this.activeY*9 + this.activeX].active = false;
-            this.activeX = -1;
-            this.activeY = -1;
+    _deactivateTile() {
+        if(this._activeX !== -1 && this._activeY !== -1) {
+            this._tiles[this._activeY*9 + this._activeX].active = false;
+            this._activeX = -1;
+            this._activeY = -1;
         }
+    }
+
+    _existsPath(indexX, indexY) {
+        // TODO: Implement bfs to find if path exists
+        return true;
     }
 }
