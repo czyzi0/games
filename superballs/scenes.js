@@ -55,8 +55,8 @@ class GameScene {
             strokeWeight(4);
             fill(Color.UI_DARK);
             textSize(100);
-            textAlign(CENTER);
-            text('GAME OVER', 0, 400, 900, 100);
+            textAlign(CENTER, CENTER);
+            text('GAME OVER', 0, 0, 900, 1000);
         }
     }
 
@@ -115,18 +115,18 @@ class GameScene {
     _resetGame() {
         this._lost = false;
 
-        this._pointsCounter = new Counter(300, 920, 600, 60, 60, 0);
+        this._pointsCounter = new Counter(0, 300, 900, 600, 100, 60);
 
         this._nextTiles = [];
         for(let i=0; i<3; ++i) {
-            this._nextTiles.push(new Tile(10 + i*100, 910, 80, Color.NONE, false));
+            this._nextTiles.push(new Tile(Color.NONE, 10 + i*100, 910, 80, false));
         }
         this._setNewNextTiles();
 
         this._tiles = [];
         for(let indexY=0; indexY<9; ++indexY) {
             for(let indexX=0; indexX<9; ++indexX) {
-                this._tiles.push(new Tile(indexX*100, indexY*100, 100, Color.NONE));
+                this._tiles.push(new Tile(Color.NONE, indexX*100, indexY*100, 100));
             }
         }
         this._activeX = -1;

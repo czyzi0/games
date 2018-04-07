@@ -1,6 +1,6 @@
 class Tile {
 
-    constructor(x, y, size, ballColor, framed=true, animationDuration=15) {
+    constructor(ballColor, x, y, size, framed=true, animationDuration=15) {
         this._size = size;
         this._x = x;
         this._y = y;
@@ -57,7 +57,7 @@ class Tile {
 
 class Counter {
 
-    constructor(x, y, w, h, size, value, animationDuration=15) {
+    constructor(value, x, y, w, h, size, animationDuration=15) {
         this._size = size;
         this._x = x;
         this._y = y;
@@ -89,7 +89,7 @@ class Counter {
         strokeWeight(2);
         fill(Color.UI_DARK);
         textSize(this._size);
-        textAlign(RIGHT);
+        textAlign(RIGHT, CENTER);
         text(int(this._displayedValue), this._x, this._y, this._w, this._h);
     }
 
