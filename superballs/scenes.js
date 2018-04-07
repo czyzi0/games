@@ -6,7 +6,7 @@ class GameScene {
 
         this.nextScene = this;
 
-        this._lost;
+        this._gameOver;
 
         this._tiles;
         this._activeX;
@@ -14,7 +14,8 @@ class GameScene {
 
         this._nextTiles;
 
-        this._pointsCounter;
+        this._scoreCounter;
+        this._topScore = 0;
 
         this._resetGame();
     }
@@ -31,7 +32,7 @@ class GameScene {
                 updated = true;
             }
         }
-        if(this._pointsCounter.update()) {
+        if(this._scoreCounter.update()) {
             updated = true;
         }
         return updated;
@@ -48,20 +49,24 @@ class GameScene {
             tile.draw();
         }
 
-        this._pointsCounter.draw();
+        this._scoreCounter.draw();
 
-        if(this._lost) {
+        if(this._gameOver) {
             stroke(Color.UI_DARK);
-            strokeWeight(4);
             fill(Color.UI_DARK);
-            textSize(100);
             textAlign(CENTER, CENTER);
-            text('GAME OVER', 0, 0, 900, 1000);
+            strokeWeight(4);
+
+            textSize(100);
+            text('GAME OVER', 0, 0, 900, 600);
+
+            textSize(50);
+            text(`TOP SCORE: ${this._topScore}`, 0, 600, 900, 200);
         }
     }
 
     handleClick(clickX, clickY) {
-        if(this._lost) {
+        if(this._gameOver) {
             if(clickX < 900 && clickX > 0 && clickY < 1000 && clickY > 0) {
                 this._resetGame();
             }
@@ -100,11 +105,11 @@ class GameScene {
                         // Check if lost
                         let emptyTiles = this._tiles.filter(tile => tile.ballColor === Color.NONE);
                         if(emptyTiles.length === 0) {
-                            this._lost = true;
+                            this._endGame();
                         }
                     }
-                    // Update points
-                    this._pointsCounter.value += max(0, 50 + (nRemoved-5)*20);
+                    // Update score
+                    this._scoreCounter.value += max(0, 50 + (nRemoved-5)*20);
                 } else {
                     this._deactivateTile();
                 }
@@ -113,9 +118,9 @@ class GameScene {
     }
 
     _resetGame() {
-        this._lost = false;
+        this._gameOver = false;
 
-        this._pointsCounter = new Counter(0, 300, 900, 600, 100, 60);
+        this._scoreCounter = new Counter(0, 300, 900, 600, 100, 60);
 
         this._nextTiles = [];
         for(let i=0; i<3; ++i) {
@@ -133,6 +138,19 @@ class GameScene {
         this._activeY = -1;
         this._putNextTiles();
         this._setNewNextTiles();
+
+        if(typeof(Storage) !== 'undefined' && localStorage['topScore']) {
+            this._topScore = JSON.parse(localStorage['topScore']);
+        }
+    }
+
+    _endGame() {
+        this._gameOver = true;
+
+        this._topScore = (this._scoreCounter.value > this._topScore)? this._scoreCounter.value : this._topScore;
+        if(typeof(Storage) !== 'undefined') {
+            localStorage['topScore'] = JSON.stringify(this._topScore);
+        }
     }
 
     _setNewNextTiles() {
@@ -147,7 +165,7 @@ class GameScene {
             let emptyTiles = this._tiles.filter(tile => tile.ballColor === Color.NONE);
             // Check if lost
             if(emptyTiles.length === 0) {
-                this._lost = true;
+                this._endGame();
                 break;
             } else {
                 random(emptyTiles).ballColor = nextTile.ballColor;
