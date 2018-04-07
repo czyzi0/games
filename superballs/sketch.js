@@ -9,7 +9,7 @@ let translationY;
 
 function setup() {
     frameRate(30);
-    createCanvas(540, 600);
+    createCanvas(windowWidth-25, windowHeight-25);
 
     Color = {
         BACKGROUND: color(250),
@@ -47,4 +47,9 @@ function draw() {
 function mouseClicked() {
     scene.handleClick((mouseX-translationX) / scale_, (mouseY-translationY) / scale_);
     scene.draw();
+}
+
+
+function windowResized() {
+    resizeCanvas(windowWidth-25, windowHeight-25);
 }
