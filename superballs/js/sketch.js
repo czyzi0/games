@@ -9,7 +9,7 @@ let translationY;
 
 function setup() {
     frameRate(30);
-    createCanvas(windowWidth-25, windowHeight-25);
+    createCanvas(windowWidth, windowHeight);
 
     Color = {
         BACKGROUND: color(250),
@@ -51,5 +51,5 @@ function mouseClicked() {
 
 
 function windowResized() {
-    resizeCanvas(windowWidth-25, windowHeight-25);
+    resizeCanvas(windowWidth, windowHeight);
 }
