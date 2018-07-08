@@ -15,8 +15,8 @@ class Tile {
     }
 
     update() {
-        if(this._ballSize < 0.7*this._size) {
-            this._ballSize = min(0.7*this._size, this._ballSize+this._ballSizeStep);
+        if(this._ballSize < 0.7 * this._size) {
+            this._ballSize = min(0.7 * this._size, this._ballSize+this._ballSizeStep);
             return true;
         } else {
             return false;
@@ -27,7 +27,7 @@ class Tile {
         // Draw tile
         if(this._framed) {
             stroke(Color.UI_LIGHT);
-            strokeWeight(0.04*this._size);
+            strokeWeight(0.04 * this._size);
             if(this.active) {
                 fill(Color.UI_LIGHT);
             } else {
@@ -39,7 +39,7 @@ class Tile {
         if(this._ballColor !== Color.NONE) {
             noStroke();
             fill(this._ballColor);
-            ellipse(this._x + this._size/2, this._y + this._size/2, this._ballSize, this._ballSize);
+            ellipse(this._x + this._size / 2, this._y + this._size / 2, this._ballSize, this._ballSize);
         }
     }
 
@@ -50,7 +50,7 @@ class Tile {
     set ballColor(newBallColor) {
         this._ballColor = newBallColor;
         this._ballSize = 0;
-        this._ballSizeStep = 0.7*this._size / this._animationDuration;
+        this._ballSizeStep = 0.7 * this._size / this._animationDuration;
     }
 }
 

@@ -29,9 +29,9 @@ function setup() {
 
 
 function draw() {
-    scale_ = min(width/scene.width, height/scene.height);
-    translationX = (width - scale_*scene.width) / 2;
-    translationY = (height - scale_*scene.height) / 2;
+    scale_ = min(width / scene.width, height / scene.height);
+    translationX = (width - scale_ * scene.width) / 2;
+    translationY = (height - scale_ * scene.height) / 2;
 
     translate(translationX, translationY);
     scale(scale_);
