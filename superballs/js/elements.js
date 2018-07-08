@@ -15,8 +15,8 @@ class Tile {
     }
 
     update() {
-        if(this._ballSize < 0.7 * this._size) {
-            this._ballSize = min(0.7 * this._size, this._ballSize+this._ballSizeStep);
+        if (this._ballSize < 0.7 * this._size) {
+            this._ballSize = min(0.7 * this._size, this._ballSize + this._ballSizeStep);
             return true;
         } else {
             return false;
@@ -25,10 +25,10 @@ class Tile {
 
     draw() {
         // Draw tile
-        if(this._framed) {
+        if (this._framed) {
             stroke(Color.UI_LIGHT);
             strokeWeight(0.04 * this._size);
-            if(this.active) {
+            if (this.active) {
                 fill(Color.UI_LIGHT);
             } else {
                 fill(Color.BACKGROUND);
@@ -36,7 +36,7 @@ class Tile {
             rect(this._x, this._y, this._size, this._size);
         }
         // Draw ball
-        if(this._ballColor !== Color.NONE) {
+        if (this._ballColor !== Color.NONE) {
             noStroke();
             fill(this._ballColor);
             ellipse(this._x + this._size / 2, this._y + this._size / 2, this._ballSize, this._ballSize);
@@ -72,10 +72,10 @@ class Counter {
     }
 
     update() {
-        if(this._displayedValue < this._value) {
+        if (this._displayedValue < this._value) {
             this._displayedValue = min(this._value, this._displayedValue + this._step);
             return true;
-        } else if(this._displayedValue > this._value) {
+        } else if (this._displayedValue > this._value) {
             this._displayedValue = max(this._value, this._displayedValue + this._step);
             return true;
         } else {

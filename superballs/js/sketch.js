@@ -1,10 +1,10 @@
-let Color;
-
-let scene;
-
 let scale_;
 let translationX;
 let translationY;
+
+let Color;
+
+let scene;
 
 
 function setup() {
@@ -20,9 +20,9 @@ function setup() {
         YELLOW: color(255, 255, 0),
         BLUE: color(0, 128, 255),
         GREEN: color(0, 153, 0),
-        PURPLE: color(127, 0, 255),
+        PURPLE: color(200, 0, 255),
         ORANGE: color(255, 128, 0)
-    }
+    };
 
     scene = new GameScene();
 }
@@ -36,7 +36,7 @@ function draw() {
     translate(translationX, translationY);
     scale(scale_);
 
-    if(scene.update()) {
+    if (scene.update()) {
         scene.draw();
     }
 
@@ -45,7 +45,7 @@ function draw() {
 
 
 function mouseClicked() {
-    scene.handleClick((mouseX-translationX) / scale_, (mouseY-translationY) / scale_);
+    scene.handleClick((mouseX - translationX) / scale_, (mouseY - translationY) / scale_);
     scene.draw();
 }
 
