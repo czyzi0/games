@@ -140,8 +140,8 @@ class GameScene {
         this._putNextTiles();
         this._setNewNextTiles();
 
-        if (typeof(Storage) !== 'undefined' && localStorage['topScore']) {
-            this._topScore = JSON.parse(localStorage['topScore']);
+        if (typeof(Storage) !== 'undefined' && localStorage['superballs.topScore']) {
+            this._topScore = JSON.parse(localStorage['superballs.topScore']);
         }
     }
 
@@ -150,7 +150,7 @@ class GameScene {
 
         this._topScore = (this._scoreCounter.value > this._topScore)? this._scoreCounter.value : this._topScore;
         if (typeof(Storage) !== 'undefined') {
-            localStorage['topScore'] = JSON.stringify(this._topScore);
+            localStorage['superballs.topScore'] = JSON.stringify(this._topScore);
         }
     }
 
