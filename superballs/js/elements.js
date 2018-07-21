@@ -1,6 +1,6 @@
 class Tile {
 
-    constructor(ballColor, x, y, size, framed=true, animationDuration=15) {
+    constructor(ballColor, x, y, size, framed=true) {
         this._size = size;
         this._x = x;
         this._y = y;
@@ -8,15 +8,13 @@ class Tile {
         this.active = false;
         this._ballColor = ballColor;
         this._ballSize = 0;
-        this._ballSizeStep = 0;
 
         this._framed = framed;
-        this._animationDuration = animationDuration;
     }
 
     update() {
         if (this._ballSize < 0.7 * this._size) {
-            this._ballSize = min(0.7 * this._size, this._ballSize + this._ballSizeStep);
+            this._ballSize = lerp(this._ballSize, 0.7 * this._size, 0.15);
             return true;
         } else {
             return false;
@@ -50,7 +48,6 @@ class Tile {
     set ballColor(newBallColor) {
         this._ballColor = newBallColor;
         this._ballSize = 0;
-        this._ballSizeStep = 0.7 * this._size / this._animationDuration;
     }
 }
 
