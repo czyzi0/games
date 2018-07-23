@@ -2,45 +2,9 @@ let scale_;
 let translationX;
 let translationY;
 
-const BOARD = [
-    [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-    [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1]
-]
-const BOARD_W = BOARD[0].length;
-const BOARD_H = BOARD.length;
+let board;
+let boardWidth;
+let boardHeight;
 
 let head;
 let body;
@@ -50,8 +14,6 @@ let dir;
 let nextDir;
 
 let gameOver;
-
-let topLength = 0;
 
 
 function setup() {
@@ -64,9 +26,9 @@ function setup() {
 
 
 function draw() {
-    scale_ = min(width / (BOARD_W * 100), height / (BOARD_H * 100));
-    translationX = (width - scale_ * BOARD_W * 100) / 2;
-    translationY = (height - scale_ * BOARD_H * 100) / 2;
+    scale_ = min(width / (boardWidth * 100), height / (boardHeight * 100));
+    translationX = (width - scale_ * boardWidth * 100) / 2;
+    translationY = (height - scale_ * boardHeight * 100) / 2;
 
     translate(translationX, translationY);
     scale(scale_);
@@ -88,12 +50,12 @@ function draw() {
         fill(81);
         textAlign(CENTER, CENTER);
 
-        let w = BOARD_W * 100;
-        let h = BOARD_H * 100 / 2;
+        let w = boardWidth * 100;
+        let h = boardHeight * 100 / 2;
         textSize(150);
         text('GAME OVER', 0, 0, w, h);
         textSize(90);
-        text(`TOP LENGTH: ${topLength}`, 0, h, w, h);
+        text('<message>', 0, h, w, h);
     }
 }
 
@@ -106,27 +68,23 @@ function windowResized() {
 function resetGame() {
     gameOver = false;
 
-    head = createVector(17, 17);
-    body = [createVector(18, 17)];
-    tail = createVector(19, 17);
+    board = random(BOARDS);
+    boardWidth = board[0].length;
+    boardHeight = board.length;
+
+    middleX = floor(boardWidth / 2);
+    middleY = floor(boardHeight / 2);
+    head = createVector(middleX, middleY);
+    body = [createVector(middleX + 1, middleY)];
+    tail = createVector(middleX + 2, middleY);
 
     dir = createVector(-1, 0);
     nextDir = createVector(-1, 0);
-
-    if (typeof(Storage) !== 'undefined' && localStorage['snake.topLength']) {
-        topLength = JSON.parse(localStorage['snake.topLength']);
-    }
 }
 
 
 function endGame() {
     gameOver = true;
-
-    length = 2 + body.length;
-    topLength = (length > topLength)? length : topLength;
-    if (typeof(Storage) !== 'undefined') {
-        localStorage['snake.topLength'] = JSON.stringify(topLength);
-    }
 }
 
 
@@ -146,8 +104,8 @@ function keyPressed() {
 function updateSnake() {
     dir = createVector(nextDir.x, nextDir.y);
     let newHead = p5.Vector.add(head, dir);
-    newHead.x = (newHead.x + BOARD_W) % BOARD_W;
-    newHead.y = (newHead.y + BOARD_H) % BOARD_H;
+    newHead.x = (newHead.x + boardWidth) % boardWidth;
+    newHead.y = (newHead.y + boardHeight) % boardHeight;
 
     // Check if ate
     let ate = false;
@@ -160,7 +118,7 @@ function updateSnake() {
     head = newHead;
 
     // Check for collision
-    if (BOARD[head.y][head.x] === 1 || (head.x === tail.x && head.y === tail.y)) {
+    if (board[head.y][head.x] === 1 || (head.x === tail.x && head.y === tail.y)) {
         endGame();
     }
     for (let element of body) {
@@ -175,11 +133,11 @@ function updateSnake() {
 function drawBoard() {
     noStroke();
     fill(200);
-    rect(0, 0, BOARD_W * 100, BOARD_H * 100);
+    rect(0, 0, boardWidth * 100, boardHeight * 100);
     fill(51);
-    for (let y = 0; y < BOARD_H; ++y) {
-        for (let x = 0; x < BOARD_W; ++x) {
-            if (BOARD[y][x]) {
+    for (let y = 0; y < boardHeight; ++y) {
+        for (let x = 0; x < boardWidth; ++x) {
+            if (board[y][x]) {
                 rect(5 + x * 100, 5 + y * 100, 90, 90);
             }
         }
