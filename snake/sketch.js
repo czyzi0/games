@@ -6,6 +6,8 @@ let board;
 let boardWidth;
 let boardHeight;
 
+let gameOver;
+
 let head;
 let body;
 let tail;
@@ -13,7 +15,19 @@ let tail;
 let dir;
 let nextDir;
 
-let gameOver;
+let fruitImages = [];
+
+
+function preload() {
+    fruitImages.push(loadImage('images/apple.png'));
+    fruitImages.push(loadImage('images/banana.png'));
+    fruitImages.push(loadImage('images/cherry.png'));
+    fruitImages.push(loadImage('images/grape.png'));
+    fruitImages.push(loadImage('images/lemon.png'));
+    fruitImages.push(loadImage('images/pear.png'));
+    fruitImages.push(loadImage('images/plum.png'));
+    fruitImages.push(loadImage('images/watermelon.png'));
+}
 
 
 function setup() {
@@ -44,6 +58,8 @@ function draw() {
     drawBoard();
     drawSnake();
 
+    // image(fruitImages[7], 15, 15, 70, 70);
+
     // Draw game over message
     if (gameOver) {
         noStroke();
@@ -62,6 +78,19 @@ function draw() {
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+}
+
+
+function keyPressed() {
+    if (keyCode === UP_ARROW && dir.y !== 1) {
+        nextDir = createVector(0, -1);
+    } else if (keyCode === RIGHT_ARROW && dir.x !== -1) {
+        nextDir = createVector(1, 0);
+    } else if (keyCode === DOWN_ARROW && dir.y !== -1) {
+        nextDir = createVector(0, 1);
+    } else if (keyCode === LEFT_ARROW && dir.x !== 1) {
+        nextDir = createVector(-1, 0);
+    }
 }
 
 
@@ -85,19 +114,6 @@ function resetGame() {
 
 function endGame() {
     gameOver = true;
-}
-
-
-function keyPressed() {
-    if (keyCode === UP_ARROW && dir.y !== 1) {
-        nextDir = createVector(0, -1);
-    } else if (keyCode === RIGHT_ARROW && dir.x !== -1) {
-        nextDir = createVector(1, 0);
-    } else if (keyCode === DOWN_ARROW && dir.y !== -1) {
-        nextDir = createVector(0, 1);
-    } else if (keyCode === LEFT_ARROW && dir.x !== 1) {
-        nextDir = createVector(-1, 0);
-    }
 }
 
 
