@@ -2,31 +2,36 @@ let scale_;
 let translationX;
 let translationY;
 
+let gameOver;
+
 let board;
+let boardImage;
 let boardWidth;
 let boardHeight;
 
-let gameOver;
+let fruit;
 
 let head;
 let body;
-let tail;
 
 let dir;
 let nextDir;
 
 let fruitImages = [];
+let grassImages = [];
+let treeImage;
 
 
 function preload() {
-    fruitImages.push(loadImage('images/apple.png'));
-    fruitImages.push(loadImage('images/banana.png'));
-    fruitImages.push(loadImage('images/cherry.png'));
-    fruitImages.push(loadImage('images/grape.png'));
-    fruitImages.push(loadImage('images/lemon.png'));
-    fruitImages.push(loadImage('images/pear.png'));
-    fruitImages.push(loadImage('images/plum.png'));
-    fruitImages.push(loadImage('images/watermelon.png'));
+    for (let i = 0; i < 7; ++i) {
+        fruitImages.push(loadImage(`images/fruit-${i}.png`));
+    }
+
+    for (let i = 0; i < 4; ++i) {
+        grassImages.push(loadImage(`images/grass-${i}.png`));
+    }
+
+    treeImage = loadImage('images/tree.png');
 }
 
 
@@ -35,7 +40,6 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
 
     resetGame();
-    // endGame();
 }
 
 
@@ -49,21 +53,20 @@ function draw() {
 
     // Update
     if (!gameOver) {
-        updateSnake();
+        update();
     }
 
     // Draw
     background(250);
 
     drawBoard();
+    drawFruit();
     drawSnake();
-
-    // image(fruitImages[7], 15, 15, 70, 70);
 
     // Draw game over message
     if (gameOver) {
         noStroke();
-        fill(81);
+        fill(51);
         textAlign(CENTER, CENTER);
 
         let w = boardWidth * 100;
@@ -97,15 +100,29 @@ function keyPressed() {
 function resetGame() {
     gameOver = false;
 
+    // Reset board
     board = random(BOARDS);
     boardWidth = board[0].length;
     boardHeight = board.length;
+    boardImage = createGraphics(boardWidth * 100, boardHeight * 100);
+    for (let y = 0; y < boardHeight; ++y) {
+        for (let x = 0; x < boardWidth; ++x) {
+            if(board[y][x]) {
+                boardImage.image(treeImage, x * 100, y * 100, 100, 100);
+            } else {
+                boardImage.image(random(grassImages), x * 100, y * 100, 100, 100);
+            }
+        }
+    }
 
-    middleX = floor(boardWidth / 2);
-    middleY = floor(boardHeight / 2);
+    // Reset fruit
+    setNewFruit();
+
+    // Reset snake
+    let middleX = floor(boardWidth / 2);
+    let middleY = floor(boardHeight / 2);
     head = createVector(middleX, middleY);
-    body = [createVector(middleX + 1, middleY)];
-    tail = createVector(middleX + 2, middleY);
+    body = [createVector(middleX + 1, middleY), createVector(middleX + 2, middleY)];
 
     dir = createVector(-1, 0);
     nextDir = createVector(-1, 0);
@@ -117,24 +134,28 @@ function endGame() {
 }
 
 
-function updateSnake() {
+function update() {
     dir = createVector(nextDir.x, nextDir.y);
     let newHead = p5.Vector.add(head, dir);
     newHead.x = (newHead.x + boardWidth) % boardWidth;
     newHead.y = (newHead.y + boardHeight) % boardHeight;
 
-    // Check if ate
+    // Check if snake ate
     let ate = false;
+    if (newHead.x === fruit.pos.x && newHead.y === fruit.pos.y) {
+        ate = true;
+        setNewFruit();
+    }
 
-    // Move
+    // Move snake
     if (!ate) {
-        tail = body.pop();
+        body.pop();
     }
     body.unshift(head);
     head = newHead;
 
-    // Check for collision
-    if (board[head.y][head.x] === 1 || (head.x === tail.x && head.y === tail.y)) {
+    // Check for collisions
+    if (board[head.y][head.x] === 1) {
         endGame();
     }
     for (let element of body) {
@@ -146,26 +167,27 @@ function updateSnake() {
 }
 
 
+function setNewFruit() {
+    // TODO: Fruit can appear on snake or on wall
+    let x = floor(random(boardWidth));
+    let y = floor(random(boardHeight));
+
+    fruit = {pos: createVector(x, y), image: random(fruitImages)};
+}
+
+
 function drawBoard() {
-    noStroke();
-    fill(200);
-    rect(0, 0, boardWidth * 100, boardHeight * 100);
-    fill(51);
-    for (let y = 0; y < boardHeight; ++y) {
-        for (let x = 0; x < boardWidth; ++x) {
-            if (board[y][x]) {
-                rect(5 + x * 100, 5 + y * 100, 90, 90);
-            }
-        }
-    }
+    image(boardImage, 0, 0, boardWidth * 100, boardHeight * 100);
+}
+
+
+function drawFruit() {
+    image(fruit.image, 5 + fruit.pos.x * 100, 5 + fruit.pos.y * 100, 90, 90);
 }
 
 
 function drawSnake() {
     noStroke();
-    // Draw tail
-    fill(0, 0, 127);
-    rect(10 + 100 * tail.x, 10 + 100 * tail.y, 80, 80);
     // Draw body
     fill(0, 127, 0);
     for (let element of body) {
