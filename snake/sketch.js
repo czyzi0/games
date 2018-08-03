@@ -1,3 +1,8 @@
+const UP = {x: 0, y: -1};
+const RIGHT = {x: 1, y: 0};
+const DOWN = {x: 0, y: 1};
+const LEFT = {x: -1, y: 0};
+
 let scale_;
 let translationX;
 let translationY;
@@ -14,6 +19,8 @@ let snakeSegments;
 let direction;
 let nextDirection;
 
+let font;
+
 let grassImage;
 let treeImage;
 let fruitImage;
@@ -23,10 +30,12 @@ let boardImage;
 
 
 function preload() {
+    font = loadFont("fonts/font.ttf");
+
     grassImage = loadImage(`images/grass.png`);
     treeImage = loadImage('images/tree.png');
     fruitImage = loadImage(`images/fruit.png`);
-    snakeImage = loadImage('images/snake.png')
+    snakeImage = loadImage('images/snake.png');
 }
 
 
@@ -71,13 +80,13 @@ function windowResized() {
 
 function keyPressed() {
     if (keyCode === UP_ARROW && direction.y !== 1) {
-        nextDirection = {x: 0, y: -1};
+        nextDirection = UP;
     } else if (keyCode === RIGHT_ARROW && direction.x !== -1) {
-        nextDirection = {x: 1, y: 0};
+        nextDirection = RIGHT;
     } else if (keyCode === DOWN_ARROW && direction.y !== -1) {
-        nextDirection = {x: 0, y: 1};
+        nextDirection = DOWN;
     } else if (keyCode === LEFT_ARROW && direction.x !== 1) {
-        nextDirection = {x: -1, y: 0};
+        nextDirection = LEFT;
     } else if (keyCode === ENTER && gameOver) {
         resetGame();
     }
@@ -110,9 +119,6 @@ function resetGame() {
         }
     }
 
-    // Reset fruit
-    setNewFruit();
-
     // Reset snake
     let middleX = floor(boardWidth / 2);
     let middleY = floor(boardHeight / 2);
@@ -123,6 +129,9 @@ function resetGame() {
     ];
     direction = {x: -1, y: 0};
     nextDirection = {x: -1, y: 0};
+
+    // Reset fruit
+    setNewFruit();
 }
 
 
@@ -162,9 +171,25 @@ function update() {
 
 
 function setNewFruit() {
-    // TODO: Fruit can appear on snake or on wall
+    let posChoices = [];
+    for (let y = 0; y < boardHeight; ++y) {
+        for (let x = 0; x < boardWidth; ++x) {
+            if (!board[y][x]) {
+                let empty = true;
+                for (let i = 0; i < snakeSegments.length; ++i) {
+                    if (equal(snakeSegments[i], {x: x, y: y})) {
+                        empty = false;
+                    }
+                }
+                if (empty) {
+                    posChoices.push({x: x, y: y});
+                }
+            }
+        }
+    }
+
     fruit = {
-        pos: {x: floor(random(boardWidth)), y: floor(random(boardHeight))},
+        pos: random(posChoices),
         type: random(Object.keys(FRUITS))
     };
 }
@@ -194,22 +219,17 @@ function drawSnake() {
     let previous;
     let next;
 
-    const up = {x: 0, y: -1};
-    const right = {x: 1, y: 0};
-    const down = {x: 0, y: 1};
-    const left = {x: -1, y: 0};
-
     // Draw tail
     let tail = snakeSegments[snakeSegments.length - 1];
     previous = snakeSegments[snakeSegments.length - 2];
 
-    if (equal(add(tail, up), previous)) {
+    if (equal(add(tail, UP), previous)) {
         segmentKey = 'tail_up';
-    } else if (equal(add(tail, right), previous)) {
+    } else if (equal(add(tail, RIGHT), previous)) {
         segmentKey = 'tail_right';
-    } else if (equal(add(tail, down), previous)) {
+    } else if (equal(add(tail, DOWN), previous)) {
         segmentKey = 'tail_down';
-    } else if (equal(add(tail, left), previous)) {
+    } else if (equal(add(tail, LEFT), previous)) {
         segmentKey = 'tail_left';
     }
 
@@ -230,17 +250,17 @@ function drawSnake() {
         let current = snakeSegments[i];
         next = snakeSegments[i + 1];
 
-        if (checkSegmentsLocation(current, previous, next, right, left)) {
+        if (checkSegmentsLocation(current, previous, next, RIGHT, LEFT)) {
             segmentKey = 'body_right_left';
-        } else if (checkSegmentsLocation(current, previous, next, up, down)) {
+        } else if (checkSegmentsLocation(current, previous, next, UP, DOWN)) {
             segmentKey = 'body_up_down';
-        } else if (checkSegmentsLocation(current, previous, next, up, right)) {
+        } else if (checkSegmentsLocation(current, previous, next, UP, RIGHT)) {
             segmentKey = 'body_up_right';
-        } else if (checkSegmentsLocation(current, previous, next, down, right)) {
+        } else if (checkSegmentsLocation(current, previous, next, DOWN, RIGHT)) {
             segmentKey = 'body_down_right';
-        } else if (checkSegmentsLocation(current, previous, next, down, left)) {
+        } else if (checkSegmentsLocation(current, previous, next, DOWN, LEFT)) {
             segmentKey = 'body_down_left';
-        } else if (checkSegmentsLocation(current, previous, next, up, left)) {
+        } else if (checkSegmentsLocation(current, previous, next, UP, LEFT)) {
             segmentKey = 'body_up_left';
         }
 
@@ -253,13 +273,13 @@ function drawSnake() {
     let head = snakeSegments[0];
     next = snakeSegments[1];
 
-    if (equal(add(head, down), next)) {
+    if (equal(add(head, DOWN), next)) {
         segmentKey = 'head_up';
-    } else if (equal(add(head, left), next)) {
+    } else if (equal(add(head, LEFT), next)) {
         segmentKey = 'head_right';
-    } else if (equal(add(head, up), next)) {
+    } else if (equal(add(head, UP), next)) {
         segmentKey = 'head_down';
-    } else if (equal(add(head, right), next)) {
+    } else if (equal(add(head, RIGHT), next)) {
         segmentKey = 'head_left';
     }
 
@@ -270,15 +290,15 @@ function drawSnake() {
 
 
 function drawTitle() {
-    noStroke();
-    fill(51);
+    fill(21);
+    textFont(font);
     textAlign(CENTER, CENTER);
 
     let w = boardWidth * 100;
     let h = boardHeight * 100 / 2;
-    textSize(150);
+    textSize(200);
     text('SNAKE', 0, 0, w, h);
-    textSize(90);
+    textSize(130);
     text('press ENTER to start', 0, h, w, h);
 }
 
