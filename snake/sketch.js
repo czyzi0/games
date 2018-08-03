@@ -5,41 +5,36 @@ let translationY;
 let gameOver;
 
 let board;
-let boardImage;
 let boardWidth;
 let boardHeight;
 
 let fruit;
 
-let head;
-let body;
+let snakeSegments;
+let direction;
+let nextDirection;
 
-let dir;
-let nextDir;
-
-let fruitImages = [];
-let grassImages = [];
+let grassImage;
 let treeImage;
+let fruitImage;
+let snakeImage;
+
+let boardImage;
 
 
 function preload() {
-    for (let i = 0; i < 7; ++i) {
-        fruitImages.push(loadImage(`images/fruit-${i}.png`));
-    }
-
-    for (let i = 0; i < 4; ++i) {
-        grassImages.push(loadImage(`images/grass-${i}.png`));
-    }
-
+    grassImage = loadImage(`images/grass.png`);
     treeImage = loadImage('images/tree.png');
+    fruitImage = loadImage(`images/fruit.png`);
+    snakeImage = loadImage('images/snake.png')
 }
 
 
 function setup() {
-    frameRate(10);
     createCanvas(windowWidth, windowHeight);
 
     resetGame();
+    endGame();
 }
 
 
@@ -63,18 +58,8 @@ function draw() {
     drawFruit();
     drawSnake();
 
-    // Draw game over message
     if (gameOver) {
-        noStroke();
-        fill(51);
-        textAlign(CENTER, CENTER);
-
-        let w = boardWidth * 100;
-        let h = boardHeight * 100 / 2;
-        textSize(150);
-        text('GAME OVER', 0, 0, w, h);
-        textSize(90);
-        text('<message>', 0, h, w, h);
+        drawTitle();
     }
 }
 
@@ -85,23 +70,32 @@ function windowResized() {
 
 
 function keyPressed() {
-    if (keyCode === UP_ARROW && dir.y !== 1) {
-        nextDir = createVector(0, -1);
-    } else if (keyCode === RIGHT_ARROW && dir.x !== -1) {
-        nextDir = createVector(1, 0);
-    } else if (keyCode === DOWN_ARROW && dir.y !== -1) {
-        nextDir = createVector(0, 1);
-    } else if (keyCode === LEFT_ARROW && dir.x !== 1) {
-        nextDir = createVector(-1, 0);
+    if (keyCode === UP_ARROW && direction.y !== 1) {
+        nextDirection = {x: 0, y: -1};
+    } else if (keyCode === RIGHT_ARROW && direction.x !== -1) {
+        nextDirection = {x: 1, y: 0};
+    } else if (keyCode === DOWN_ARROW && direction.y !== -1) {
+        nextDirection = {x: 0, y: 1};
+    } else if (keyCode === LEFT_ARROW && direction.x !== 1) {
+        nextDirection = {x: -1, y: 0};
+    } else if (keyCode === ENTER && gameOver) {
+        resetGame();
     }
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Logic functions
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function resetGame() {
     gameOver = false;
 
     // Reset board
     board = random(BOARDS);
+    frameRate(board.speed);
+
+    board = board.board;
     boardWidth = board[0].length;
     boardHeight = board.length;
     boardImage = createGraphics(boardWidth * 100, boardHeight * 100);
@@ -110,7 +104,8 @@ function resetGame() {
             if(board[y][x]) {
                 boardImage.image(treeImage, x * 100, y * 100, 100, 100);
             } else {
-                boardImage.image(random(grassImages), x * 100, y * 100, 100, 100);
+                let tile = random(GRASS);
+                boardImage.image(grassImage, x * 100, y * 100, 100, 100, tile.x * 128, tile.y * 128, 128, 128);
             }
         }
     }
@@ -121,11 +116,13 @@ function resetGame() {
     // Reset snake
     let middleX = floor(boardWidth / 2);
     let middleY = floor(boardHeight / 2);
-    head = createVector(middleX, middleY);
-    body = [createVector(middleX + 1, middleY), createVector(middleX + 2, middleY)];
-
-    dir = createVector(-1, 0);
-    nextDir = createVector(-1, 0);
+    snakeSegments = [
+        {x: middleX, y: middleY},
+        {x: middleX + 1, y: middleY},
+        {x: middleX + 2, y: middleY}
+    ];
+    direction = {x: -1, y: 0};
+    nextDirection = {x: -1, y: 0};
 }
 
 
@@ -135,10 +132,8 @@ function endGame() {
 
 
 function update() {
-    dir = createVector(nextDir.x, nextDir.y);
-    let newHead = p5.Vector.add(head, dir);
-    newHead.x = (newHead.x + boardWidth) % boardWidth;
-    newHead.y = (newHead.y + boardHeight) % boardHeight;
+    direction = nextDirection;
+    let newHead = add(snakeSegments[0], direction);
 
     // Check if snake ate
     let ate = false;
@@ -149,17 +144,16 @@ function update() {
 
     // Move snake
     if (!ate) {
-        body.pop();
+        snakeSegments.pop();
     }
-    body.unshift(head);
-    head = newHead;
+    snakeSegments.unshift(newHead);
 
     // Check for collisions
-    if (board[head.y][head.x] === 1) {
+    if (board[snakeSegments[0].y][snakeSegments[0].x] === 1) {
         endGame();
     }
-    for (let element of body) {
-        if (head.x === element.x && head.y === element.y) {
+    for (let i = 1; i < snakeSegments.length; ++i) {
+        if (snakeSegments[0].x === snakeSegments[i].x && snakeSegments[0].y === snakeSegments[i].y) {
             endGame();
             break;
         }
@@ -169,12 +163,16 @@ function update() {
 
 function setNewFruit() {
     // TODO: Fruit can appear on snake or on wall
-    let x = floor(random(boardWidth));
-    let y = floor(random(boardHeight));
-
-    fruit = {pos: createVector(x, y), image: random(fruitImages)};
+    fruit = {
+        pos: {x: floor(random(boardWidth)), y: floor(random(boardHeight))},
+        type: random(Object.keys(FRUITS))
+    };
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Draw functions
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function drawBoard() {
     image(boardImage, 0, 0, boardWidth * 100, boardHeight * 100);
@@ -182,18 +180,121 @@ function drawBoard() {
 
 
 function drawFruit() {
-    image(fruit.image, 5 + fruit.pos.x * 100, 5 + fruit.pos.y * 100, 90, 90);
+    let sourceX = FRUITS[fruit.type].x * 128;
+    let sourceY = FRUITS[fruit.type].y * 128;
+    image(fruitImage, fruit.pos.x * 100, fruit.pos.y * 100, 100, 100, sourceX, sourceY, 128, 128);
 }
 
 
 function drawSnake() {
-    noStroke();
-    // Draw body
-    fill(0, 127, 0);
-    for (let element of body) {
-        rect(10 + 100 * element.x, 10 + 100 * element.y, 80, 80);
+    let sourceX;
+    let sourceY;
+    let segmentKey;
+
+    let previous;
+    let next;
+
+    const up = {x: 0, y: -1};
+    const right = {x: 1, y: 0};
+    const down = {x: 0, y: 1};
+    const left = {x: -1, y: 0};
+
+    // Draw tail
+    let tail = snakeSegments[snakeSegments.length - 1];
+    previous = snakeSegments[snakeSegments.length - 2];
+
+    if (equal(add(tail, up), previous)) {
+        segmentKey = 'tail_up';
+    } else if (equal(add(tail, right), previous)) {
+        segmentKey = 'tail_right';
+    } else if (equal(add(tail, down), previous)) {
+        segmentKey = 'tail_down';
+    } else if (equal(add(tail, left), previous)) {
+        segmentKey = 'tail_left';
     }
+
+    sourceX = SNAKE_SEGMENTS[segmentKey].x * 64;
+    sourceY = SNAKE_SEGMENTS[segmentKey].y * 64;
+    image(snakeImage, tail.x * 100, tail.y * 100, 100, 100, sourceX, sourceY, 64, 64);
+
+    // Draw body
+    function checkSegmentsLocation(current, previous, next, dir1, dir2) {
+        return (
+            equal(add(current, dir1), previous) && equal(add(current, dir2), next) ||
+            equal(add(current, dir2), previous) && equal(add(current, dir1), next)
+        );
+    }
+
+    for (let i = 1; i < snakeSegments.length - 1; ++i) {
+        previous = snakeSegments[i - 1];
+        let current = snakeSegments[i];
+        next = snakeSegments[i + 1];
+
+        if (checkSegmentsLocation(current, previous, next, right, left)) {
+            segmentKey = 'body_right_left';
+        } else if (checkSegmentsLocation(current, previous, next, up, down)) {
+            segmentKey = 'body_up_down';
+        } else if (checkSegmentsLocation(current, previous, next, up, right)) {
+            segmentKey = 'body_up_right';
+        } else if (checkSegmentsLocation(current, previous, next, down, right)) {
+            segmentKey = 'body_down_right';
+        } else if (checkSegmentsLocation(current, previous, next, down, left)) {
+            segmentKey = 'body_down_left';
+        } else if (checkSegmentsLocation(current, previous, next, up, left)) {
+            segmentKey = 'body_up_left';
+        }
+
+        sourceX = SNAKE_SEGMENTS[segmentKey].x * 64;
+        sourceY = SNAKE_SEGMENTS[segmentKey].y * 64;
+        image(snakeImage, current.x * 100, current.y * 100, 100, 100, sourceX, sourceY, 64, 64);
+    }
+
     // Draw head
-    fill(255, 0, 0);
-    rect(10 + 100 * head.x, 10 + 100 * head.y, 80, 80);
+    let head = snakeSegments[0];
+    next = snakeSegments[1];
+
+    if (equal(add(head, down), next)) {
+        segmentKey = 'head_up';
+    } else if (equal(add(head, left), next)) {
+        segmentKey = 'head_right';
+    } else if (equal(add(head, up), next)) {
+        segmentKey = 'head_down';
+    } else if (equal(add(head, right), next)) {
+        segmentKey = 'head_left';
+    }
+
+    sourceX = SNAKE_SEGMENTS[segmentKey].x * 64;
+    sourceY = SNAKE_SEGMENTS[segmentKey].y * 64;
+    image(snakeImage, head.x * 100, head.y * 100, 100, 100, sourceX, sourceY, 64, 64);
+}
+
+
+function drawTitle() {
+    noStroke();
+    fill(51);
+    textAlign(CENTER, CENTER);
+
+    let w = boardWidth * 100;
+    let h = boardHeight * 100 / 2;
+    textSize(150);
+    text('SNAKE', 0, 0, w, h);
+    textSize(90);
+    text('press ENTER to start', 0, h, w, h);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helper functions
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function add(vec1, vec2) {
+    let sum = {x: vec1.x + vec2.x, y: vec1.y + vec2.y};
+    sum.x = (sum.x + boardWidth) % boardWidth;
+    sum.y = (sum.y + boardHeight) % boardHeight;
+    return sum;
+}
+
+
+function equal(vec1, vec2) {
+    return vec1.x === vec2.x && vec1.y === vec2.y;
 }
