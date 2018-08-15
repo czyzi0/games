@@ -2,7 +2,7 @@ let scale_;
 let translationX;
 let translationY;
 
-let Color;
+let COLOR;
 
 let scene;
 
@@ -11,7 +11,7 @@ function setup() {
     frameRate(30);
     createCanvas(windowWidth, windowHeight);
 
-    Color = {
+    COLOR = {
         BACKGROUND: color(250),
         UI_LIGHT: color(200),
         UI_DARK: color(81),

@@ -24,17 +24,17 @@ class Tile {
     draw() {
         // Draw tile
         if (this._framed) {
-            stroke(Color.UI_LIGHT);
+            stroke(COLOR.UI_LIGHT);
             strokeWeight(0.04 * this._size);
             if (this.active) {
-                fill(Color.UI_LIGHT);
+                fill(COLOR.UI_LIGHT);
             } else {
-                fill(Color.BACKGROUND);
+                fill(COLOR.BACKGROUND);
             }
             rect(this._x, this._y, this._size, this._size);
         }
         // Draw ball
-        if (this._ballColor !== Color.NONE) {
+        if (this._ballColor !== COLOR.NONE) {
             noStroke();
             fill(this._ballColor);
             ellipse(this._x + this._size / 2, this._y + this._size / 2, this._ballSize, this._ballSize);
@@ -82,9 +82,9 @@ class Counter {
     }
 
     draw() {
-        stroke(Color.UI_DARK);
+        stroke(COLOR.UI_DARK);
         strokeWeight(2);
-        fill(Color.UI_DARK);
+        fill(COLOR.UI_DARK);
         textSize(this._size);
         textAlign(RIGHT, CENTER);
         text(int(this._displayedValue), this._x, this._y, this._w, this._h);
