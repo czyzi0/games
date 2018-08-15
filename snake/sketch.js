@@ -9,6 +9,8 @@ let translationY;
 
 let gameOver;
 
+let boardConf;
+
 let board;
 let boardWidth;
 let boardHeight;
@@ -21,21 +23,27 @@ let nextDirection;
 
 let font;
 
+let fruitConf;
+let snakeConf;
+
 let grassImage;
 let treeImage;
 let fruitImage;
 let snakeImage;
 
-let boardImage;
-
 
 function preload() {
-    font = loadFont("fonts/font.ttf");
+    boardConf = loadJSON('assets/board.json');
 
-    grassImage = loadImage(`images/grass.png`);
-    treeImage = loadImage('images/tree.png');
-    fruitImage = loadImage(`images/fruit.png`);
-    snakeImage = loadImage('images/snake.png');
+    font = loadFont('assets/font.ttf');
+
+    fruitConf = loadJSON('assets/fruit.json');
+    snakeConf = loadJSON('assets/snake.json');
+
+    grassImage = loadImage('assets/grass.png');
+    treeImage = loadImage('assets/tree.png');
+    fruitImage = loadImage('assets/fruit.png');
+    snakeImage = loadImage('assets/snake.png');
 }
 
 
@@ -94,30 +102,17 @@ function keyPressed() {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Logic functions
+// Logic
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function resetGame() {
     gameOver = false;
 
     // Reset board
-    board = random(BOARDS);
-    frameRate(board.speed);
-
-    board = board.board;
+    frameRate(boardConf.speed);
+    board = boardConf.board;
     boardWidth = board[0].length;
     boardHeight = board.length;
-    boardImage = createGraphics(boardWidth * 100, boardHeight * 100);
-    for (let y = 0; y < boardHeight; ++y) {
-        for (let x = 0; x < boardWidth; ++x) {
-            if(board[y][x]) {
-                boardImage.image(treeImage, x * 100, y * 100, 100, 100);
-            } else {
-                let tile = random(GRASS);
-                boardImage.image(grassImage, x * 100, y * 100, 100, 100, tile.x * 128, tile.y * 128, 128, 128);
-            }
-        }
-    }
 
     // Reset snake
     let middleX = floor(boardWidth / 2);
@@ -190,30 +185,44 @@ function setNewFruit() {
 
     fruit = {
         pos: random(posChoices),
-        type: random(Object.keys(FRUITS))
+        type: random(Object.keys(fruitConf.fruits))
     };
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Draw functions
+// Drawing
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function drawBoard() {
-    image(boardImage, 0, 0, boardWidth * 100, boardHeight * 100);
+    for (let y = 0; y < boardHeight; ++y) {
+        for (let x = 0; x < boardWidth; ++x) {
+            if(board[y][x]) {
+                image(treeImage, x * 100, y * 100, 100, 100);
+            } else {
+                image(grassImage, x * 100, y * 100, 100, 100);
+            }
+        }
+    }
 }
 
 
 function drawFruit() {
-    let sourceX = FRUITS[fruit.type].x * 128;
-    let sourceY = FRUITS[fruit.type].y * 128;
-    image(fruitImage, fruit.pos.x * 100, fruit.pos.y * 100, 100, 100, sourceX, sourceY, 128, 128);
+    image(
+        fruitImage,
+        fruit.pos.x * 100,
+        fruit.pos.y * 100,
+        100,
+        100,
+        fruitConf.fruits[fruit.type].x,
+        fruitConf.fruits[fruit.type].y,
+        fruitConf.size,
+        fruitConf.size
+    );
 }
 
 
 function drawSnake() {
-    let sourceX;
-    let sourceY;
     let segmentKey;
 
     let previous;
@@ -233,9 +242,17 @@ function drawSnake() {
         segmentKey = 'tail_left';
     }
 
-    sourceX = SNAKE_SEGMENTS[segmentKey].x * 64;
-    sourceY = SNAKE_SEGMENTS[segmentKey].y * 64;
-    image(snakeImage, tail.x * 100, tail.y * 100, 100, 100, sourceX, sourceY, 64, 64);
+    image(
+        snakeImage,
+        tail.x * 100,
+        tail.y * 100,
+        100,
+        100,
+        snakeConf.segments[segmentKey].x,
+        snakeConf.segments[segmentKey].y,
+        snakeConf.size,
+        snakeConf.size
+    );
 
     // Draw body
     function checkSegmentsLocation(current, previous, next, dir1, dir2) {
@@ -264,9 +281,17 @@ function drawSnake() {
             segmentKey = 'body_up_left';
         }
 
-        sourceX = SNAKE_SEGMENTS[segmentKey].x * 64;
-        sourceY = SNAKE_SEGMENTS[segmentKey].y * 64;
-        image(snakeImage, current.x * 100, current.y * 100, 100, 100, sourceX, sourceY, 64, 64);
+        image(
+            snakeImage,
+            current.x * 100,
+            current.y * 100,
+            100,
+            100,
+            snakeConf.segments[segmentKey].x,
+            snakeConf.segments[segmentKey].y,
+            snakeConf.size,
+            snakeConf.size
+        );
     }
 
     // Draw head
@@ -283,9 +308,17 @@ function drawSnake() {
         segmentKey = 'head_left';
     }
 
-    sourceX = SNAKE_SEGMENTS[segmentKey].x * 64;
-    sourceY = SNAKE_SEGMENTS[segmentKey].y * 64;
-    image(snakeImage, head.x * 100, head.y * 100, 100, 100, sourceX, sourceY, 64, 64);
+    image(
+        snakeImage,
+        head.x * 100,
+        head.y * 100,
+        100,
+        100,
+        snakeConf.segments[segmentKey].x,
+        snakeConf.segments[segmentKey].y,
+        snakeConf.size,
+        snakeConf.size
+    );
 }
 
 
@@ -304,7 +337,7 @@ function drawTitle() {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Helper functions
+// Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function add(vec1, vec2) {
