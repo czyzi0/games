@@ -1,20 +1,20 @@
 class Tile {
 
     constructor(ballColor, x, y, size, framed=true) {
-        this._size = size;
-        this._x = x;
-        this._y = y;
+        this.size = size;
+        this.x = x;
+        this.y = y;
 
         this.active = false;
-        this._ballColor = ballColor;
-        this._ballSize = 0;
+        this.ballColor_ = ballColor;
+        this.ballSize = 0;
 
-        this._framed = framed;
+        this.framed = framed;
     }
 
     update() {
-        if (this._ballSize < 0.7 * this._size) {
-            this._ballSize = lerp(this._ballSize, 0.7 * this._size, 0.15);
+        if (this.ballSize < 0.7 * this.size) {
+            this.ballSize = lerp(this.ballSize, 0.7 * this.size, 0.15);
             return true;
         } else {
             return false;
@@ -23,60 +23,58 @@ class Tile {
 
     draw() {
         // Draw tile
-        if (this._framed) {
+        if (this.framed) {
             stroke(COLOR.UI_LIGHT);
-            strokeWeight(0.04 * this._size);
+            strokeWeight(0.04 * this.size);
             if (this.active) {
                 fill(COLOR.UI_LIGHT);
             } else {
                 fill(COLOR.BACKGROUND);
             }
-            rect(this._x, this._y, this._size, this._size);
+            rect(this.x, this.y, this.size, this.size);
         }
         // Draw ball
-        if (this._ballColor !== COLOR.NONE) {
+        if (this.ballColor_ !== COLOR.NONE) {
             noStroke();
-            fill(this._ballColor);
-            ellipse(this._x + this._size / 2, this._y + this._size / 2, this._ballSize, this._ballSize);
+            fill(this.ballColor_);
+            ellipse(this.x + this.size / 2, this.y + this.size / 2, this.ballSize, this.ballSize);
         }
     }
 
     get ballColor() {
-        return this._ballColor;
+        return this.ballColor_;
     }
 
     set ballColor(newBallColor) {
-        this._ballColor = newBallColor;
-        this._ballSize = 0;
+        this.ballColor_ = newBallColor;
+        this.ballSize = 0;
     }
 }
 
 
 class Counter {
 
-    constructor(value, x, y, w, h, size, animationDuration=15) {
-        this._size = size;
-        this._x = x;
-        this._y = y;
-        this._w = w;
-        this._h = h;
+    constructor(value, x, y, w, h, size) {
+        this.size = size;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
 
-        this._value = value;
-        this._displayedValue = value;
-        this._step = 0;
-
-        this._animationDuration = animationDuration;
+        this.value_ = value;
+        this.valueDisplayed = value;
+        this.step = 0;
     }
 
     update() {
-        if (this._displayedValue < this._value) {
-            this._displayedValue = min(this._value, this._displayedValue + this._step);
+        if (this.valueDisplayed < this.value_) {
+            this.valueDisplayed = min(this.value_, this.valueDisplayed + this.step);
             return true;
-        } else if (this._displayedValue > this._value) {
-            this._displayedValue = max(this._value, this._displayedValue + this._step);
+        } else if (this.valueDisplayed > this.value_) {
+            this.valueDisplayed = max(this.value_, this.valueDisplayed + this.step);
             return true;
         } else {
-            this._step = 0;
+            this.step = 0;
             return false;
         }
     }
@@ -85,17 +83,17 @@ class Counter {
         stroke(COLOR.UI_DARK);
         strokeWeight(2);
         fill(COLOR.UI_DARK);
-        textSize(this._size);
+        textSize(this.size);
         textAlign(RIGHT, CENTER);
-        text(int(this._displayedValue), this._x, this._y, this._w, this._h);
+        text(int(this.valueDisplayed), this.x, this.y, this.w, this.h);
     }
 
     get value() {
-        return this._value;
+        return this.value_;
     }
 
     set value(newValue) {
-        this._value = newValue;
-        this._step = (this._value - this._displayedValue) / this._animationDuration;
+        this.value_ = newValue;
+        this.step = (this.value_ - this.valueDisplayed) / 15;
     }
 }

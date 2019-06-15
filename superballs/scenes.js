@@ -6,33 +6,33 @@ class GameScene {
 
         this.nextScene = this;
 
-        this._gameOver;
+        this.gameOver;
 
-        this._tiles;
-        this._activeX;
-        this._activeY;
+        this.tiles;
+        this.activeX;
+        this.activeY;
 
-        this._nextTiles;
+        this.nextTiles;
 
-        this._scoreCounter;
-        this._topScore = 0;
+        this.scoreCounter;
+        this.topScore = 0;
 
-        this._resetGame();
+        this.resetGame();
     }
 
     update() {
         let updated = false;
-        for (let tile of this._tiles) {
+        for (let tile of this.tiles) {
             if(tile.update()) {
                 updated = true;
             }
         }
-        for (let tile of this._nextTiles) {
+        for (let tile of this.nextTiles) {
             if(tile.update()) {
                 updated = true;
             }
         }
-        if (this._scoreCounter.update()) {
+        if (this.scoreCounter.update()) {
             updated = true;
         }
         return updated;
@@ -41,17 +41,17 @@ class GameScene {
     draw() {
         background(COLOR.BACKGROUND);
 
-        for (let tile of this._tiles) {
+        for (let tile of this.tiles) {
             tile.draw();
         }
 
-        for (let tile of this._nextTiles) {
+        for (let tile of this.nextTiles) {
             tile.draw();
         }
 
-        this._scoreCounter.draw();
+        this.scoreCounter.draw();
 
-        if (this._gameOver) {
+        if (this.gameOver) {
             stroke(COLOR.UI_DARK);
             fill(COLOR.UI_DARK);
             textAlign(CENTER, CENTER);
@@ -61,14 +61,14 @@ class GameScene {
             text('GAME OVER', 0, 0, 900, 600);
 
             textSize(50);
-            text(`TOP SCORE: ${this._topScore}`, 0, 600, 900, 200);
+            text(`TOP SCORE: ${this.topScore}`, 0, 600, 900, 200);
         }
     }
 
     handleClick(clickX, clickY) {
-        if (this._gameOver) {
+        if (this.gameOver) {
             if (clickX < 900 && clickX > 0 && clickY < 1000 && clickY > 0) {
-                this._resetGame();
+                this.resetGame();
             }
         } else {
             let indexX = floor(clickX / 100);
@@ -79,94 +79,94 @@ class GameScene {
                 return
             }
             // Click on tile with ball
-            if (this._tiles[indexY * 9 + indexX].ballColor !== COLOR.NONE) {
+            if (this.tiles[indexY * 9 + indexX].ballColor !== COLOR.NONE) {
                 // Click on activated tile
-                if (this._activeX === indexX && this._activeY === indexY) {
-                    this._deactivateTile();
+                if (this.activeX === indexX && this.activeY === indexY) {
+                    this.deactivateTile();
                 }
                 // Click on deactivated tile
                 else {
-                    this._deactivateTile();
-                    this._activateTile(indexX, indexY);
+                    this.deactivateTile();
+                    this.activateTile(indexX, indexY);
                 }
             }
             // Click on empty tile when some tile is active
-            else if (this._activeX !== -1 && this._activeY !== -1) {
-                if (this._existsPath(indexX, indexY)) {
-                    this._tiles[indexY * 9 + indexX].ballColor =
-                        this._tiles[this._activeY * 9 + this._activeX].ballColor;
-                    this._tiles[this._activeY * 9 + this._activeX].ballColor = COLOR.NONE;
-                    this._deactivateTile();
+            else if (this.activeX !== -1 && this.activeY !== -1) {
+                if (this.existsPath(indexX, indexY)) {
+                    this.tiles[indexY * 9 + indexX].ballColor =
+                        this.tiles[this.activeY * 9 + this.activeX].ballColor;
+                    this.tiles[this.activeY * 9 + this.activeX].ballColor = COLOR.NONE;
+                    this.deactivateTile();
 
-                    let nRemoved = this._removeTiles();
+                    let nRemoved = this.removeTiles();
                     if (nRemoved === 0) {
-                        this._putNextTiles();
-                        this._setNewNextTiles();
-                        nRemoved += this._removeTiles();
+                        this.putNextTiles();
+                        this.setNewNextTiles();
+                        nRemoved += this.removeTiles();
                         // Check if lost
-                        let emptyTiles = this._tiles.filter(tile => tile.ballColor === COLOR.NONE);
+                        let emptyTiles = this.tiles.filter(tile => tile.ballColor === COLOR.NONE);
                         if (emptyTiles.length === 0) {
-                            this._endGame();
+                            this.endGame();
                         }
                     }
                     // Update score
-                    this._scoreCounter.value += max(0, 50 + (nRemoved - 5) * 20);
+                    this.scoreCounter.value += max(0, 50 + (nRemoved - 5) * 20);
                 } else {
-                    this._deactivateTile();
+                    this.deactivateTile();
                 }
             }
         }
     }
 
-    _resetGame() {
-        this._gameOver = false;
+    resetGame() {
+        this.gameOver = false;
 
-        this._scoreCounter = new Counter(0, 300, 900, 600, 100, 60);
+        this.scoreCounter = new Counter(0, 300, 900, 600, 100, 60);
 
-        this._nextTiles = [];
+        this.nextTiles = [];
         for (let i = 0; i < 3; ++i) {
-            this._nextTiles.push(new Tile(COLOR.NONE, 10 + i * 100, 910, 80, false));
+            this.nextTiles.push(new Tile(COLOR.NONE, 10 + i * 100, 910, 80, false));
         }
-        this._setNewNextTiles();
+        this.setNewNextTiles();
 
-        this._tiles = [];
+        this.tiles = [];
         for (let indexY = 0; indexY < 9; ++indexY) {
             for (let indexX = 0; indexX < 9; ++indexX) {
-                this._tiles.push(new Tile(COLOR.NONE, indexX * 100, indexY * 100, 100));
+                this.tiles.push(new Tile(COLOR.NONE, indexX * 100, indexY * 100, 100));
             }
         }
-        this._activeX = -1;
-        this._activeY = -1;
-        this._putNextTiles();
-        this._setNewNextTiles();
+        this.activeX = -1;
+        this.activeY = -1;
+        this.putNextTiles();
+        this.setNewNextTiles();
 
         if (typeof(Storage) !== 'undefined' && localStorage['superballs.topScore']) {
-            this._topScore = JSON.parse(localStorage['superballs.topScore']);
+            this.topScore = JSON.parse(localStorage['superballs.topScore']);
         }
     }
 
-    _endGame() {
-        this._gameOver = true;
+    endGame() {
+        this.gameOver = true;
 
-        this._topScore = (this._scoreCounter.value > this._topScore)? this._scoreCounter.value : this._topScore;
+        this.topScore = (this.scoreCounter.value > this.topScore)? this.scoreCounter.value : this.topScore;
         if (typeof(Storage) !== 'undefined') {
-            localStorage['superballs.topScore'] = JSON.stringify(this._topScore);
+            localStorage['superballs.topScore'] = JSON.stringify(this.topScore);
         }
     }
 
-    _setNewNextTiles() {
+    setNewNextTiles() {
         for (let i = 0; i < 3; ++i) {
             let color_ = random([COLOR.RED, COLOR.YELLOW, COLOR.BLUE, COLOR.GREEN, COLOR.PURPLE, COLOR.ORANGE]);
-            this._nextTiles[i].ballColor = color_;
+            this.nextTiles[i].ballColor = color_;
         }
     }
 
-    _putNextTiles() {
-        for (let nextTile of this._nextTiles) {
-            let emptyTiles = this._tiles.filter(tile => tile.ballColor === COLOR.NONE);
+    putNextTiles() {
+        for (let nextTile of this.nextTiles) {
+            let emptyTiles = this.tiles.filter(tile => tile.ballColor === COLOR.NONE);
             // Check if lost
             if (emptyTiles.length === 0) {
-                this._endGame();
+                this.endGame();
                 break;
             } else {
                 random(emptyTiles).ballColor = nextTile.ballColor;
@@ -174,15 +174,15 @@ class GameScene {
         }
     }
 
-    _removeTiles() {
+    removeTiles() {
         let toRemoveTiles = new Array(81).fill(false);
         for (let indexY = 0; indexY < 9; ++indexY) {
             for (let indexX = 0; indexX < 9; ++indexX) {
-                let currentColor = this._tiles[indexY * 9 + indexX].ballColor;
+                let currentColor = this.tiles[indexY * 9 + indexX].ballColor;
                 if (currentColor !== COLOR.NONE) {
                     // Horizontal check
                     let x = indexX;
-                    while (x < 9 && this._tiles[indexY*9 + x].ballColor === currentColor) {
+                    while (x < 9 && this.tiles[indexY * 9 + x].ballColor === currentColor) {
                         ++x;
                     }
                     if (x - indexX >= 5) {
@@ -193,7 +193,7 @@ class GameScene {
                     }
                     // Vertical check
                     let y = indexY;
-                    while (y < 9 && this._tiles[y * 9 + indexX].ballColor === currentColor) {
+                    while (y < 9 && this.tiles[y * 9 + indexX].ballColor === currentColor) {
                         ++y;
                     }
                     if (y - indexY >= 5) {
@@ -205,7 +205,7 @@ class GameScene {
                     // Diagonal check (\)
                     x = indexX;
                     y = indexY;
-                    while (x < 9 && y < 9 && this._tiles[y * 9 + x].ballColor === currentColor) {
+                    while (x < 9 && y < 9 && this.tiles[y * 9 + x].ballColor === currentColor) {
                         ++x;
                         ++y;
                     }
@@ -219,7 +219,7 @@ class GameScene {
                     // Diagonal check (/)
                     x = indexX;
                     y = indexY;
-                    while (x < 9 && y >= 0 && this._tiles[y * 9 + x].ballColor === currentColor) {
+                    while (x < 9 && y >= 0 && this.tiles[y * 9 + x].ballColor === currentColor) {
                         ++x;
                         --y;
                     }
@@ -236,17 +236,17 @@ class GameScene {
         let nRemoved = 0;
         for (let i = 0; i < 81; ++i) {
             if (toRemoveTiles[i]) {
-                this._tiles[i].ballColor = COLOR.NONE;
+                this.tiles[i].ballColor = COLOR.NONE;
                 ++nRemoved;
             }
         }
         return nRemoved;
     }
 
-    _existsPath(indexX, indexY) {
+    existsPath(indexX, indexY) {
         let visitedTiles = new Array(81).fill(false);
-        let x = this._activeX;
-        let y = this._activeY;
+        let x = this.activeX;
+        let y = this.activeY;
         let bfsQueue = [x, y];
 
         visitedTiles[y * 9 + x] = true;
@@ -255,25 +255,25 @@ class GameScene {
             x = bfsQueue.shift();
             y = bfsQueue.shift();
             // Up
-            if(y > 0 && this._tiles[(y - 1) * 9 + x].ballColor === COLOR.NONE && !visitedTiles[(y - 1) * 9 + x]) {
+            if(y > 0 && this.tiles[(y - 1) * 9 + x].ballColor === COLOR.NONE && !visitedTiles[(y - 1) * 9 + x]) {
                 visitedTiles[(y - 1) * 9 + x] = true;
                 bfsQueue.push(x);
                 bfsQueue.push(y - 1);
             }
             // Right
-            if(x < 8 && this._tiles[y * 9 + x + 1].ballColor === COLOR.NONE && !visitedTiles[y * 9 + x + 1]) {
+            if(x < 8 && this.tiles[y * 9 + x + 1].ballColor === COLOR.NONE && !visitedTiles[y * 9 + x + 1]) {
                 visitedTiles[y * 9 + x + 1] = true;
                 bfsQueue.push(x + 1);
                 bfsQueue.push(y);
             }
             // Down
-            if(y < 8 && this._tiles[(y + 1) * 9 + x].ballColor === COLOR.NONE && !visitedTiles[(y + 1) * 9 + x]) {
+            if(y < 8 && this.tiles[(y + 1) * 9 + x].ballColor === COLOR.NONE && !visitedTiles[(y + 1) * 9 + x]) {
                 visitedTiles[(y + 1) * 9 + x] = true;
                 bfsQueue.push(x);
                 bfsQueue.push(y + 1);
             }
             // Left
-            if(x > 0 && this._tiles[y * 9 + x - 1].ballColor === COLOR.NONE && !visitedTiles[y * 9 + x - 1]) {
+            if(x > 0 && this.tiles[y * 9 + x - 1].ballColor === COLOR.NONE && !visitedTiles[y * 9 + x - 1]) {
                 visitedTiles[y * 9 + x - 1] = true;
                 bfsQueue.push(x - 1);
                 bfsQueue.push(y);
@@ -282,17 +282,17 @@ class GameScene {
         return visitedTiles[indexY * 9 + indexX];
     }
 
-    _activateTile(indexX, indexY) {
-        this._tiles[indexY * 9 + indexX].active = true;
-        this._activeX = indexX;
-        this._activeY = indexY;
+    activateTile(indexX, indexY) {
+        this.tiles[indexY * 9 + indexX].active = true;
+        this.activeX = indexX;
+        this.activeY = indexY;
     }
 
-    _deactivateTile() {
-        if(this._activeX !== -1 && this._activeY !== -1) {
-            this._tiles[this._activeY * 9 + this._activeX].active = false;
-            this._activeX = -1;
-            this._activeY = -1;
+    deactivateTile() {
+        if(this.activeX !== -1 && this.activeY !== -1) {
+            this.tiles[this.activeY * 9 + this.activeX].active = false;
+            this.activeX = -1;
+            this.activeY = -1;
         }
     }
 }
