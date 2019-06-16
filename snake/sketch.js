@@ -26,7 +26,11 @@ function setup() {
 
     COLOR = {
         BACKGROUND: color(250),
-        BOARD: color(121)
+        BOARD: color(121),
+        SNAKE_LIGHT: color(30, 144, 255),
+        SNAKE_DARK: color(0,0,128),
+        SNAKE_EYE_OUT: color(255),
+        SNAKE_EYE_IN: color(0)
     };
 
     scene = new GameScene();

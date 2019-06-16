@@ -21,9 +21,11 @@ class Snake {
 
         this.Segment = class {
 
-            constructor(x, y, length, angle) {
-                this.dir = p5.Vector.fromAngle(angle).setMag(length);
+            constructor(x, y, size, angle) {
+                this.dir = p5.Vector.fromAngle(angle).setMag(size / 5);
                 this.pos = createVector(x, y);
+
+                this.size = size;
             }
 
             update(target) {
@@ -32,13 +34,14 @@ class Snake {
             }
 
             draw() {
-                stroke(0);
-                strokeWeight(4);
-                let v = p5.Vector.add(this.pos, this.dir)
-                line(this.pos.x, this.pos.y, v.x, v.y);
-        
-                strokeWeight(16);
-                point(this.pos.x, this.pos.y);
+                noStroke();
+                ellipseMode(CENTER);
+                let color_ = COLOR.SNAKE_DARK;
+                for (let r = this.size; r > 0; --r) {
+                    fill(color_);
+                    ellipse(this.pos.x, this.pos.y, r);
+                    color_ = lerpColor(color_, COLOR.SNAKE_LIGHT, 0.08);
+                }
             }
         }
 
@@ -46,6 +49,23 @@ class Snake {
         
             update() {
                 this.pos.add(this.dir.copy().setMag(8));
+            }
+
+            draw() {
+                super.draw();
+                let v = this.dir.copy().rotate(PI/2);
+                let x = this.pos.x + this.dir.x;
+                let y = this.pos.y + this.dir.y;
+                // Right eye
+                fill(COLOR.SNAKE_EYE_OUT);
+                ellipse(x + v.x, y + v.y, this.size / 3);
+                fill(COLOR.SNAKE_EYE_IN);
+                ellipse(x + v.x, y + v.y, this.size / 5);
+                // Left eye
+                fill(COLOR.SNAKE_EYE_OUT);
+                ellipse(x - v.x, y - v.y, this.size / 3);
+                fill(COLOR.SNAKE_EYE_IN);
+                ellipse(x - v.x, y - v.y, this.size / 5);
             }
 
             rotate(angle) {
@@ -59,9 +79,9 @@ class Snake {
 
     update() {
         if (keyIsDown(RIGHT_ARROW)) {
-            this.head.rotate(0.08);
+            this.head.rotate(0.13);
         } else if (keyIsDown(LEFT_ARROW)) {
-            this.head.rotate(-0.08);
+            this.head.rotate(-0.13);
         }
 
         this.head.update();
@@ -73,10 +93,10 @@ class Snake {
     }
 
     draw() {
-        this.head.draw();
-        for (let seg of this.body) {
-            seg.draw();
+        for (let i = this.body.length - 1; i >= 0; --i) {
+            this.body[i].draw();
         }
+        this.head.draw();
     }
 }
 

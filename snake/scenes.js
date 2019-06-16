@@ -37,7 +37,7 @@ class GameScene {
         this.gameOver = false;
 
         this.board = new Board(0, 0, 1000);
-        this.snake = new Snake(400, 500, 10, 15);
+        this.snake = new Snake(400, 500, 10, 45);
         this.fruit = new Fruit(200, 200, 35);
     }
 }
