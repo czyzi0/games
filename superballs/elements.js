@@ -82,8 +82,7 @@ class Counter {
   }
 
   draw() {
-    stroke(COLOR.UI_DARK);
-    strokeWeight(2);
+    noStroke();
     fill(COLOR.UI_DARK);
     textSize(this._size);
     textAlign(RIGHT, CENTER);

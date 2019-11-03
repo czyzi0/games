@@ -52,10 +52,9 @@ class GameScene {
     this.scoreCounter.draw();
 
     if (this.gameOver) {
-      stroke(COLOR.UI_DARK);
+      noStroke();
       fill(COLOR.UI_DARK);
       textAlign(CENTER, CENTER);
-      strokeWeight(4);
 
       textSize(100);
       text('GAME OVER', 0, 0, 900, 600);
