@@ -1,99 +1,101 @@
 class Tile {
 
-    constructor(ballColor, x, y, size, framed=true) {
-        this.size = size;
-        this.x = x;
-        this.y = y;
+  constructor(ballColor, x, y, size, framed=true) {
+    this._size = size;
+    this._x = x;
+    this._y = y;
 
-        this.active = false;
-        this.ballColor_ = ballColor;
-        this.ballSize = 0;
+    this.active = false;
+    this._ballColor = ballColor;
+    this._ballSize = 0;
 
-        this.framed = framed;
+    this._framed = framed;
+  }
+
+  update() {
+    if (this._ballSize < 0.7 * this._size) {
+      this._ballSize = lerp(this._ballSize, 0.7 * this._size, 0.15);
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    update() {
-        if (this.ballSize < 0.7 * this.size) {
-            this.ballSize = lerp(this.ballSize, 0.7 * this.size, 0.15);
-            return true;
-        } else {
-            return false;
-        }
+  draw() {
+    // Draw tile
+    if (this._framed) {
+      stroke(COLOR.UI_LIGHT);
+      strokeWeight(0.04 * this._size);
+      if (this.active) {
+        fill(COLOR.UI_LIGHT);
+      } else {
+        fill(COLOR.BACKGROUND);
+      }
+      rect(this._x, this._y, this._size, this._size);
     }
+    // Draw ball
+    if (this._ballColor !== COLOR.NONE) {
+      noStroke();
+      fill(this._ballColor);
+      ellipse(this._x + this._size / 2, this._y + this._size / 2, this._ballSize, this._ballSize);
+    }
+  }
 
-    draw() {
-        // Draw tile
-        if (this.framed) {
-            stroke(COLOR.UI_LIGHT);
-            strokeWeight(0.04 * this.size);
-            if (this.active) {
-                fill(COLOR.UI_LIGHT);
-            } else {
-                fill(COLOR.BACKGROUND);
-            }
-            rect(this.x, this.y, this.size, this.size);
-        }
-        // Draw ball
-        if (this.ballColor_ !== COLOR.NONE) {
-            noStroke();
-            fill(this.ballColor_);
-            ellipse(this.x + this.size / 2, this.y + this.size / 2, this.ballSize, this.ballSize);
-        }
-    }
+  get ballColor() {
+    return this._ballColor;
+  }
 
-    get ballColor() {
-        return this.ballColor_;
-    }
-
-    set ballColor(newBallColor) {
-        this.ballColor_ = newBallColor;
-        this.ballSize = 0;
-    }
+  set ballColor(newBallColor) {
+    this._ballColor = newBallColor;
+    this._ballSize = 0;
+  }
 }
 
 
 class Counter {
 
-    constructor(value, x, y, w, h, size) {
-        this.size = size;
-        this.x = x;
-        this.y = y;
-        this.w = w;
-        this.h = h;
+  constructor(value, x, y, w, h, size, animationDuration=15) {
+    this._size = size;
+    this._x = x;
+    this._y = y;
+    this._w = w;
+    this._h = h;
 
-        this.value_ = value;
-        this.valueDisplayed = value;
-        this.step = 0;
-    }
+    this._value = value;
+    this._displayedValue = value;
+    this._step = 0;
 
-    update() {
-        if (this.valueDisplayed < this.value_) {
-            this.valueDisplayed = min(this.value_, this.valueDisplayed + this.step);
-            return true;
-        } else if (this.valueDisplayed > this.value_) {
-            this.valueDisplayed = max(this.value_, this.valueDisplayed + this.step);
-            return true;
-        } else {
-            this.step = 0;
-            return false;
-        }
-    }
+    this._animationDuration = animationDuration;
+  }
 
-    draw() {
-        stroke(COLOR.UI_DARK);
-        strokeWeight(2);
-        fill(COLOR.UI_DARK);
-        textSize(this.size);
-        textAlign(RIGHT, CENTER);
-        text(int(this.valueDisplayed), this.x, this.y, this.w, this.h);
+  update() {
+    if (this._displayedValue < this._value) {
+      this._displayedValue = min(this._value, this._displayedValue + this._step);
+      return true;
+    } else if (this._displayedValue > this._value) {
+      this._displayedValue = max(this._value, this._displayedValue + this._step);
+      return true;
+    } else {
+      this._step = 0;
+      return false;
     }
+  }
 
-    get value() {
-        return this.value_;
-    }
+  draw() {
+    stroke(COLOR.UI_DARK);
+    strokeWeight(2);
+    fill(COLOR.UI_DARK);
+    textSize(this._size);
+    textAlign(RIGHT, CENTER);
+    text(int(this._displayedValue), this._x, this._y, this._w, this._h);
+  }
 
-    set value(newValue) {
-        this.value_ = newValue;
-        this.step = (this.value_ - this.valueDisplayed) / 15;
-    }
+  get value() {
+    return this._value;
+  }
+
+  set value(newValue) {
+    this._value = newValue;
+    this._step = (this._value - this._displayedValue) / this._animationDuration;
+  }
 }
