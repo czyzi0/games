@@ -27,7 +27,6 @@ function setup() {
   COLOR = {
     BACKGROUND: color(250),
     GRASS: color(62, 126, 0),
-    UI: color(51),
     SNAKE_LIGHT: color(30, 144, 255),
     SNAKE_DARK: color(0,0,128),
     SNAKE_EYE_OUT: color(255),

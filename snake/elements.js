@@ -81,6 +81,8 @@ class Snake {
 
     this.head = new this.Head(x, y, size, 0);
     this.body = new Array(segments).fill().map(() => new this.Segment(0, y, size, 0));
+
+    this.toGrow = 0;
   }
 
   update() {
@@ -88,6 +90,12 @@ class Snake {
       this.head.rotate(0.13);
     } else if (keyIsDown(LEFT_ARROW)) {
       this.head.rotate(-0.13);
+    }
+
+    if (this.toGrow && frameCount % 5 === 0) {
+      let last = this.body[this.body.length - 1];
+      this.body.push(new this.Segment(last.x, last.y, last.size, last.angle));
+      this.toGrow -= 1;
     }
 
     this.head.update();
@@ -118,9 +126,7 @@ class Snake {
   }
 
   grow() {
-    let last = this.body[this.body.length - 1];
-    this.body.push(new this.Segment(last.x, last.y, last.size, last.angle));
-    this.body.push(new this.Segment(last.x, last.y, last.size, last.angle));
+    this.toGrow += 5;
   }
 
   checkBitten() {

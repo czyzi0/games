@@ -53,7 +53,7 @@ class GameScene {
 
     if (this.paused) {
       noStroke();
-      fill(COLOR.UI);
+      fill(color(21));
       textAlign(CENTER, CENTER);
 
       textSize(50);
@@ -62,14 +62,16 @@ class GameScene {
 
     if (this.gameOver) {
       noStroke();
-      fill(COLOR.UI);
+      fill(color(21));
       textAlign(CENTER, CENTER);
 
       textSize(100);
       text('GAME OVER', 0, 0, 1000, 600);
 
       textSize(50);
-      text(`TOP LENGTH: ${this.topLength}`, 0, 600, 1000, 200);
+      text(`TOP LENGTH: ${this.topLength}`, 0, 600, 1000, 75);
+      textSize(30);
+      text('PRESS ENTER', 0, 675, 1000, 75);
     }
   }
 
@@ -77,7 +79,7 @@ class GameScene {
     if (keyCode === 80) {
       this.paused = !this.paused;
     }
-    if (this.gameOver) {
+    if (keyCode === ENTER && this.gameOver) {
       this.resetGame();
     }
   }
