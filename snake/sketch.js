@@ -11,10 +11,13 @@ let scene;
 function preload() {
   IMAGE = {
     FRUIT: {
-      APPLE: loadImage('assets/apple.png'),
-      BANANA: loadImage('assets/banana.png'),
-      GRAPE: loadImage('assets/grape.png'),
-      LEMON: loadImage('assets/lemon.png')
+      APPLE: loadImage('images/apple.png'),
+      BANANA: loadImage('images/banana.png'),
+      CHERRY: loadImage('images/cherry.png'),
+      GARNET: loadImage('images/garnet.png'),
+      GRAPE: loadImage('images/grape.png'),
+      LEMON: loadImage('images/lemon.png'),
+      PLUM: loadImage('images/plum.png'),
     }
   };
 }

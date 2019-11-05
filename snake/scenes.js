@@ -53,7 +53,7 @@ class GameScene {
 
     if (this.paused) {
       noStroke();
-      fill(color(21));
+      fill(color(31));
       textAlign(CENTER, CENTER);
 
       textSize(50);
@@ -62,7 +62,7 @@ class GameScene {
 
     if (this.gameOver) {
       noStroke();
-      fill(color(21));
+      fill(color(31));
       textAlign(CENTER, CENTER);
 
       textSize(100);
@@ -76,7 +76,7 @@ class GameScene {
   }
 
   handleKeyPressed(keyCode) {
-    if (keyCode === 80) {
+    if (keyCode === 80 && !this.gameOver) {
       this.paused = !this.paused;
     }
     if (keyCode === ENTER && this.gameOver) {
