@@ -8,8 +8,9 @@ class Board {
   update() {}
 
   draw() {
-    noStroke();
-    fill(COLOR.GRASS);
+    strokeWeight(4);
+    stroke(COLOR.UI_DARK);
+    fill(COLOR.UI_LIGHT);
     rect(this.pos.x, this.pos.y, this.size, this.size);
   }
 }
@@ -33,7 +34,7 @@ class Snake {
         for (let d = this.size; d > 0; --d) {
           this.img.fill(color_);
           this.img.ellipse(this.size / 2, this.size / 2, d);
-          color_ = lerpColor(color_, COLOR.SNAKE_LIGHT, 0.08);
+          color_ = lerpColor(color_, COLOR.SNAKE_LIGHT, 0.03);
         }
       }
 
@@ -62,15 +63,16 @@ class Snake {
         let v = this.dir.copy().rotate(PI/2);
         let x = this.pos.x + this.dir.x;
         let y = this.pos.y + this.dir.y;
+        noStroke();
         // Right eye
-        fill(COLOR.SNAKE_EYE_OUT);
+        fill(COLOR.WHITE);
         ellipse(x + v.x, y + v.y, this.size / 3);
-        fill(COLOR.SNAKE_EYE_IN);
+        fill(COLOR.BLACK);
         ellipse(x + v.x, y + v.y, this.size / 5);
         // Left eye
-        fill(COLOR.SNAKE_EYE_OUT);
+        fill(COLOR.WHITE);
         ellipse(x - v.x, y - v.y, this.size / 3);
-        fill(COLOR.SNAKE_EYE_IN);
+        fill(COLOR.BLACK);
         ellipse(x - v.x, y - v.y, this.size / 5);
       }
 
