@@ -96,7 +96,7 @@ class Snake {
 
     if (this.toGrow && frameCount % 5 === 0) {
       let last = this.body[this.body.length - 1];
-      this.body.push(new this.Segment(last.x, last.y, last.size, last.angle));
+      this.body.push(new this.Segment(last.pos.x, last.pos.y, last.size, last.angle));
       this.toGrow -= 1;
     }
 
