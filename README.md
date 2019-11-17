@@ -17,3 +17,6 @@ Simple clone of [this](http://www.superkulki.com/balls) game implemented using [
 
 ### Controls
 Use mouse to move balls in order to arrange five (or more) of them vertically, horizontally or diagonally.
+
+## Attributions
+> [Dice](https://www.flaticon.com/free-icon/dice_246569) by [Dimi Kazak](https://www.flaticon.com/authors/dimi-kazak)
