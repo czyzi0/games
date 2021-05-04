@@ -11,7 +11,12 @@ let scene;
 function preload() {
   IMAGES = [
     loadImage('images/animals.jpg'),
-    loadImage('images/man.jpg'),
+    loadImage('images/bear.jpg'),
+    loadImage('images/clouds.jpg'),
+    loadImage('images/dinosaur.png'),
+    loadImage('images/fox.png'),
+    loadImage('images/trees.png'),
+    loadImage('images/woman.jpg'),
   ];
 }
 
@@ -54,4 +59,5 @@ function mouseClicked() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  scene.draw();
 }
